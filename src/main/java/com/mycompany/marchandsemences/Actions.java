@@ -9,15 +9,4 @@ package com.mycompany.marchandsemences;
  * @author nikolakisiov
  */
 public enum Actions {
-//    actions possibles par le joueur
-
-    ACCEPT("A"),
-    REFUSE("R"),
-    QUIT("Q");
-    
-    public String tag;
-    
-    Actions(String tag){
-        this.tag = tag;
-    }
 }

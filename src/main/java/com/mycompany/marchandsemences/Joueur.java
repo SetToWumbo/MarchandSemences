@@ -9,12 +9,5 @@ package com.mycompany.marchandsemences;
  * @author nikolakisiov
  */
 public class Joueur {
-//    contient les infos du joueur
-
-    private double banque;
-
-    Joueur(double montant) {
-        banque = montant;
-    }
 
 }
