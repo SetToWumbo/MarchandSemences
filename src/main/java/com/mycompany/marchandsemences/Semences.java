@@ -5,6 +5,7 @@
 package com.mycompany.marchandsemences;
 
 import java.util.Random;
+import java.util.ArrayList;
 
 /**
  *
@@ -20,14 +21,13 @@ public enum Semences {
 
     private final int PLANCHER;
     private final int PLAFOND;
-    private final int FLUCT;
+    private final int FLUCT;  // toutes les semences fluctuent de 0 à valeur. On n'a que besoin de savoir le max de la fluctuation
 
     private String tag;
     private int stock;
     private double prix;
     private int augmentations;
-    private double[] histoPrix = new double[15];
-    
+    private ArrayList<Double> histoPrix = new ArrayList<Double>();
 
     Semences(String tag, int plancher, int plafond, int fluct) {
         this.tag = tag;
@@ -37,63 +37,33 @@ public enum Semences {
         stock = 0;
         prix = (double) rng.nextInt(plancher, plafond) / 100;
         augmentations = 0;
-        histoPrix[0] = prix;
-    }
-
-    public double getPrix() {
-        return this.prix;
-    }
-
-    public int augmentationsConsecutives(int jour, double[] histoPrix) {
-        int nbAugmentations = 0;
-        
-        for (int i = (jour < 7)? jour : jour % 6; i < jour - 1; i++) {
-            if (histoPrix[i++] > histoPrix[i]) {
-                nbAugmentations++;
-            } else {
-                nbAugmentations = 0;
-            }
-        }
-        return nbAugmentations;
-    }
-
-    public int chanceAugmentation(int nbAugmentations) {
-        switch (nbAugmentations) {
-            case 0:
-                return 50;
-            case 1:
-                return 55;
-            case 2:
-                return 60;
-            case 3:
-                return 65;
-            case 4:
-                return 70;
-            case 5:
-                return 75;
-            default:
-                return 80;
-        }
-    }
-
-    public boolean prixAugmente(int jour, int chanceAugmentation) {
-            int chance = chanceAugmentation(jour)
+        histoPrix.add(prix);
     }
 
     public double prixDuJour() {
-        double fluctuation;
-//        calculate the price fluctuation of a given semence
 //         call a method that checks whether or not price increases
-//        add or subtract amount with a Math.min or Math.max
 
-        for (Semences semence : Semences.values()) {
-            if (prixAugmente) {
-                semence.prix = Math.min(semence.prix + fluctuation, semence.PLAFOND);
-            } else {
-                semence.prix = Math.max(semence.prix - fluctuation, semence.PLANCHER);
-            }
-
-        }
-
+//        add or subtract amount random amout within seed attributes with a Math.min or Math.max
+        double prix;
+        
+        
+        
+        return prix;
     }
+
+    
+    
+
+
+    
+    
+    public double getPrix() {
+        return this.prix;
+    }
+    
+    public ArrayList<Double> getHistoPrix(){
+        return this.histoPrix;
+    }
+
+//    public double changerPrix(){}
 }
