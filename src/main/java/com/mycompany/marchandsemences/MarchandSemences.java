@@ -16,27 +16,48 @@ public class MarchandSemences {
     public static void main(String[] args) {
         double banque = MONTANT_DEPART;
         Actions choix;
-        do {
-            choix = saisirChoix();
+        Semences semences;
 
-            switch (choix) {
-                case ACHETER:
-                    break;
-                case VENDRE:
-                    break;
-                case ATTENDRE:
-                    int jours = 5;
-                    jour += jours;
-                    banque -= jours * COUT_OPERATION;
-                    break;
-                case HISTORIQUE:
-                    break;
-                case QUITTER:
-                    System.out.println("Au revoir.");
-                    break;
+        int jours = 3;
+        for (Semences semence : Semences.values()){
+            System.out.print(semence + " Prix de depart: " + semence.getPrix() + "\n");
+        }
+        for (int i = 0; i < jours; i++) {
+            System.out.println("Jour : " + jour);
+            for (Semences semence : Semences.values()){
+                System.out.print(semence + " Prix du jour: " + semence.getPrix() + "\n");
             }
 
-        } while (choix != Actions.QUITTER || banque > 0);
+            for (Semences semence : Semences.values()) {
+                System.out.print(semence.toString() + " ");
+                prixDuJour(semence);
+                semence.sauverPrix();
+                System.out.println("fin semence " + semence.toString());
+            }
+            System.out.println("Jour termine: " + jour);
+            jour++;
+        }
+
+
+//        do {
+//            choix = saisirChoix();
+//
+//            switch (choix) {
+//                case ACHETER:
+//                    break;
+//                case VENDRE:
+//                    break;
+//                case ATTENDRE:
+//
+//                    break;
+//                case HISTORIQUE:
+//                    break;
+//                case QUITTER:
+//                    System.out.println("Au revoir.");
+//                    break;
+//            }
+//
+//        } while (choix != Actions.QUITTER || banque > 0);
 
     }
 
@@ -60,27 +81,44 @@ public class MarchandSemences {
         return null;
     }
 
-    public void prixDuJour(Semences semence) {
+
+//    new day starts
+//    GENERATE NEW PRICE:
+//    check previous days: if there's more than 1 day (current day > 1), check for price trends.
+//    else, generate random price with 50/50 chance
+
+    public static void prixDuJour(int jour, Semences semence) {
         Random random = new Random();
         double prix = semence.getPrix();
-
+        double montantFluct =(double) random.nextInt(semence.getFluct() + 1) / 100;
+        if (jour < 2){
+            if (random.nextBoolean()) {
+                montantFluct *= -1;
+                System.out.println("nouveau montant de fluctuation: " + montantFluct);
+            }
+        }
+        // on compte le nombre de changements de prix consecutifs dans le passe
         int changement = changementsConsecutifs(jour, semence.getHistoPrix());
-        int chanceContinue = chanceChangement(Math.abs(changement));
+        // on genere le montat duquel du changement du prix
 
-        double montantFluct = (double) random.nextInt(semence.getFluct()) / 100;
+        System.out.println("Montant de fluctuation de base: " + montantFluct);
 //		if the chance of it continuing fails, reverses direction of change. Otherwise, proceed with same sign
 //		random.nextInt(100+1)<chanceContinue verifie si el signe de
 
-        if (!(random.nextInt(100 + 1) < chanceContinue)) {
+        if (!(random.nextInt(100 + 1) < chanceChangement(Math.abs(changement)))) {
             changement *= -1;
+            System.out.println("Signe du changement: " + changement);
         }
-        montantFluct *= ((changement / Math.abs(changement)));
-
+        if (changement != 0) {
+            montantFluct *= ((changement / Math.abs(changement)));
+            System.out.println("Nouveau montant de fluctuation: " + montantFluct);
+        }
         if (montantFluct >= 0) {
-            semence.setPrix(Math.max(prix + montantFluct, semence.getPlafond()));
+            semence.setPrix(Math.min(prix + montantFluct, (double)semence.getPlafond() / 100));
         } else {
-            semence.setPrix(Math.min(prix + montantFluct, semence.getPlancher()));
+            semence.setPrix(Math.max(prix + montantFluct, (double)semence.getPlancher() / 100));
         }
+
 
     }
 
@@ -90,24 +128,25 @@ public class MarchandSemences {
      *
      * @param jour      jour courant du programme
      * @param histoPrix historique des prix d'une semence
-     * @return montant de changements consecutifds et leur signe
+     * @return montant de changements consecutifs et leur signe
      */
-    public int changementsConsecutifs(int jour, ArrayList<Double> histoPrix) {
-//       s'il n'y a pas plus qu'un prix dans l'historique, le prix n'a pas pu changer
-        if (histoPrix.size() < 2) {
+    public static int changementsConsecutifs(int jour, ArrayList<Double> histoPrix) {
+        if (jour < 2){
             return 0;
         }
-
         int consecutif = 0;
         double changement;
         int[] signes = new int[histoPrix.size()]; // size of this array should have 2 options depending on if current day is past day 6
 
-//        on parcours l'historique de prix à partir du jours courant et on stocke le signe du changement de prix dans un tableau
-        for (int i = histoPrix.size(); i > 1; i--) {
-            changement = (histoPrix.get(i) - histoPrix.get(i--));
-            signes[i] = (int) (changement / Math.abs(changement));
+//        on parcours l'historique de prix à partir du jour courant et on stocke le signe du changement de prix dans un tableau
+        for (int i = histoPrix.size() - 1; i > 1; i--) {
+            System.out.print("Position : " + i + " ");
+            changement = (histoPrix.get(i) - histoPrix.get(i - 1));
+            int signe = (int) (changement / Math.abs(changement));
+            signes[i] = signe;
+            System.out.print("valeur du changement changement : " + changement + " ");
+            System.out.print("Changement posi ou nega: " + signe + " ");
         }
-
 //      la dernière position de la liste contient le changement de prix prix le plus récent
         int signe = signes[signes.length - 1];
 //          on parcours le tableaux de signes. si les signes des changements sont identiques au plus récent, on incrémente consécutif en conséquence
@@ -115,7 +154,9 @@ public class MarchandSemences {
             boolean egal = (j == signe);
             if (egal) {
                 consecutif += signe;
+                System.out.println("Changements consecutifs: " + consecutif);
             } else {
+                System.out.println("fin des changements consecutifs.");
                 return consecutif;
             }
         }
@@ -124,7 +165,7 @@ public class MarchandSemences {
         return 0;
     }
 
-    private int chanceChangement(int nbChangements) {
+    private static int chanceChangement(int nbChangements) {
         switch (nbChangements) {
             case 0:
                 return 50;

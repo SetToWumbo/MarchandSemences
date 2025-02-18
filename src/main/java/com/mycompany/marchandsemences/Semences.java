@@ -8,13 +8,12 @@ import java.util.Random;
 import java.util.ArrayList;
 
 /**
- *
  * @author nikolakisiov
  */
 public enum Semences {
 
-    RIZ("r", 23, 150, 10),
-    CITROUILLE("c", 50, 400, 15),
+   // RIZ("r", 23, 150, 10),
+   // CITROUILLE("c", 50, 400, 15),
     MAIS("m", 100, 1200, 20);
 
     private final int PLANCHER;
@@ -28,7 +27,7 @@ public enum Semences {
     private ArrayList<Double> histoPrix = new ArrayList<Double>();
 
     Semences(String tag, int plancher, int plafond, int fluct) {
-	Random rng = new Random();
+        Random rng = new Random();
         this.tag = tag;
         PLANCHER = plancher;
         PLAFOND = plafond;
@@ -38,24 +37,32 @@ public enum Semences {
         augmentations = 0;
         histoPrix.add(prix);
     }
-    
-    public ArrayList<Double> getHistoPrix(){
+
+    public ArrayList<Double> getHistoPrix() {
         return this.histoPrix;
     }
-    
-    public void setPrix(double prix){
-	    this.prix = prix;
+
+    public void sauverPrix() {
+        this.histoPrix.add(prix);
     }
+
+    public void setPrix(double prix) {
+        this.prix = prix;
+    }
+
     public double getPrix() {
         return this.prix;
     }
-    public int getPlafond(){
-	    return this.PLAFOND;
+
+    public int getPlafond() {
+        return this.PLAFOND;
     }
-    public int getPlancher(){
-	    return this.PLANCHER;
+
+    public int getPlancher() {
+        return this.PLANCHER;
     }
-    public int getFluct(){
-	    return this.FLUCT;
+
+    public int getFluct() {
+        return this.FLUCT;
     }
 }
