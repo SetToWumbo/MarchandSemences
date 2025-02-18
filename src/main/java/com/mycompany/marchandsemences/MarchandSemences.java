@@ -12,7 +12,8 @@ import java.util.Scanner;
 public class MarchandSemences {
 
     private static final int MONTANT_DEPART = 25000;
-    public int jour = 0;
+    private static final int COUT_OPERATION = 25;
+    public static int jour = 0;
 //    public ArrayList<double> marche = new ArrayList<double>();
 
     public static void main(String[] args) {
@@ -27,6 +28,9 @@ public class MarchandSemences {
                 case VENDRE:
                     break;
                 case ATTENDRE:
+                    int jours = 5;
+                    jour += jours;
+                    Player1.banque() -= jours * COUT_OPERATION;
                     break;
                 case HISTORIQUE:
                     break;
