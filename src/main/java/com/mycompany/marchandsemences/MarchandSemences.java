@@ -18,9 +18,9 @@ public class MarchandSemences {
         Actions choix;
         Semences semences;
 
-        int jours = 3;
+        int jours = 2;
         for (Semences semence : Semences.values()){
-            System.out.print(semence + " Prix de depart: " + semence.getPrix() + "\n");
+            System.out.print(semence + "Prix de depart: " + semence.getPrix() + "\n");
         }
         for (int i = 0; i < jours; i++) {
             System.out.println("Jour : " + jour);
@@ -30,7 +30,7 @@ public class MarchandSemences {
 
             for (Semences semence : Semences.values()) {
                 System.out.print(semence.toString() + " ");
-                prixDuJour(semence);
+                prixDuJour(jour, semence);
                 semence.sauverPrix();
                 System.out.println("fin semence " + semence.toString());
             }
@@ -81,6 +81,23 @@ public class MarchandSemences {
         return null;
     }
 
+//START OF DAY
+//generate amount to fluctuate by
+//if we're before day 3:
+//    50% chance of either increase or decrease.
+//    fluctuate price by amount
+//    return price
+//else:
+//    DO CUMULATIVE FLUCTUATION TEST:
+//        got through price history
+//        check for cumulative changes
+//        return amount of cumulative changes in either direction
+//    USE RETURNED AMOUNT TO GIVE CHANCE OF MAINTAINING DIRECTION
+//
+//returned amout chance of either increase or decrease.
+//fluctuate price by amount;
+//return price;
+
 
 //    new day starts
 //    GENERATE NEW PRICE:
@@ -90,21 +107,13 @@ public class MarchandSemences {
     public static void prixDuJour(int jour, Semences semence) {
         Random random = new Random();
         double prix = semence.getPrix();
-        double montantFluct =(double) random.nextInt(semence.getFluct() + 1) / 100;
-        if (jour < 2){
-            if (random.nextBoolean()) {
-                montantFluct *= -1;
-                System.out.println("nouveau montant de fluctuation: " + montantFluct);
-            }
-        }
+        double montantFluct = (double) random.nextInt(semence.getFluct() + 1) / 100;
         // on compte le nombre de changements de prix consecutifs dans le passe
         int changement = changementsConsecutifs(jour, semence.getHistoPrix());
-        // on genere le montat duquel du changement du prix
-
+        // on genere le montant duquel du changement du prix
         System.out.println("Montant de fluctuation de base: " + montantFluct);
 //		if the chance of it continuing fails, reverses direction of change. Otherwise, proceed with same sign
 //		random.nextInt(100+1)<chanceContinue verifie si el signe de
-
         if (!(random.nextInt(100 + 1) < chanceChangement(Math.abs(changement)))) {
             changement *= -1;
             System.out.println("Signe du changement: " + changement);
