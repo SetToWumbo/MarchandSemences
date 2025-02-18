@@ -1,12 +1,10 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- */
 package com.mycompany.marchandsemences;
 
+import java.util.ArrayList;
+import java.util.Random;
 import java.util.Scanner;
 
 /**
- *
  * @author nikolakisiov
  */
 public class MarchandSemences {
@@ -14,10 +12,9 @@ public class MarchandSemences {
     private static final int MONTANT_DEPART = 25000;
     private static final int COUT_OPERATION = 25;
     public static int jour = 0;
-//    public ArrayList<double> marche = new ArrayList<double>();
 
     public static void main(String[] args) {
-        Joueur Player1 = new Joueur(MONTANT_DEPART);
+        double banque = MONTANT_DEPART;
         Actions choix;
         do {
             choix = saisirChoix();
@@ -30,7 +27,7 @@ public class MarchandSemences {
                 case ATTENDRE:
                     int jours = 5;
                     jour += jours;
-                    Player1.banque() -= jours * COUT_OPERATION;
+                    banque -= jours * COUT_OPERATION;
                     break;
                 case HISTORIQUE:
                     break;
@@ -39,7 +36,7 @@ public class MarchandSemences {
                     break;
             }
 
-        } while (choix != Actions.QUITTER || Player1.getBanque() > 0);
+        } while (choix != Actions.QUITTER || banque > 0);
 
     }
 
@@ -63,10 +60,39 @@ public class MarchandSemences {
         return null;
     }
 
-    private int changementsConsecutifs(int jour, ArrayList<Double> histoPrix) {
-//        on observe le prix de chaque jour précédent à partir du jour courant
-//        on stocke le changement de prix dans un tableau
+    public void prixDuJour(Semences semence) {
+        Random random = new Random();
+        double prix = semence.getPrix();
 
+        int changement = changementsConsecutifs(jour, semence.getHistoPrix());
+        int chanceContinue = chanceChangement(Math.abs(changement));
+
+        double montantFluct = (double) random.nextInt(semence.getFluct()) / 100;
+//		if the chance of it continuing fails, reverses direction of change. Otherwise, proceed with same sign
+//		random.nextInt(100+1)<chanceContinue verifie si el signe de
+
+        if (!(random.nextInt(100 + 1) < chanceContinue)) {
+            changement *= -1;
+        }
+        montantFluct *= ((changement / Math.abs(changement)));
+
+        if (montantFluct >= 0) {
+            semence.setPrix(Math.max(prix + montantFluct, semence.getPlafond()));
+        } else {
+            semence.setPrix(Math.min(prix + montantFluct, semence.getPlancher()));
+        }
+
+    }
+
+    /**
+     * observe l'historique des prix d'une semence et retourne le nombre de
+     * changements consécutifs
+     *
+     * @param jour      jour courant du programme
+     * @param histoPrix historique des prix d'une semence
+     * @return montant de changements consecutifds et leur signe
+     */
+    public int changementsConsecutifs(int jour, ArrayList<Double> histoPrix) {
 //       s'il n'y a pas plus qu'un prix dans l'historique, le prix n'a pas pu changer
         if (histoPrix.size() < 2) {
             return 0;

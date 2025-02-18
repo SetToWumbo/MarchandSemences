@@ -17,8 +17,6 @@ public enum Semences {
     CITROUILLE("c", 50, 400, 15),
     MAIS("m", 100, 1200, 20);
 
-    Random rng = new Random();
-
     private final int PLANCHER;
     private final int PLAFOND;
     private final int FLUCT;  // toutes les semences fluctuent de 0 à valeur. On n'a que besoin de savoir le max de la fluctuation
@@ -30,6 +28,7 @@ public enum Semences {
     private ArrayList<Double> histoPrix = new ArrayList<Double>();
 
     Semences(String tag, int plancher, int plafond, int fluct) {
+	Random rng = new Random();
         this.tag = tag;
         PLANCHER = plancher;
         PLAFOND = plafond;
@@ -39,31 +38,24 @@ public enum Semences {
         augmentations = 0;
         histoPrix.add(prix);
     }
-
-    public double prixDuJour() {
-//         call a method that checks whether or not price increases
-
-//        add or subtract amount random amout within seed attributes with a Math.min or Math.max
-        double prix;
-        
-        
-        
-        return prix;
-    }
-
-    
-    
-
-
-    
-    
-    public double getPrix() {
-        return this.prix;
-    }
     
     public ArrayList<Double> getHistoPrix(){
         return this.histoPrix;
     }
-
-//    public double changerPrix(){}
+    
+    public void setPrix(double prix){
+	    this.prix = prix;
+    }
+    public double getPrix() {
+        return this.prix;
+    }
+    public int getPlafond(){
+	    return this.PLAFOND;
+    }
+    public int getPlancher(){
+	    return this.PLANCHER;
+    }
+    public int getFluct(){
+	    return this.FLUCT;
+    }
 }
