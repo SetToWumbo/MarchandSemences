@@ -11,14 +11,44 @@ package com.mycompany.marchandsemences;
 //    contient les infos du joueur
 public class Joueur {
 
-    private double banque;
+    private int jour;
+    private float banque;
+    private int[] stocks = new int[Semences.values().length];
 
-    Joueur(double montant) {
-        banque = montant;
+    Joueur(int jourDepart, float montantDepart) {
+        jour = jourDepart;
+        banque = montantDepart;
+    }
+
+ 
+
+    public void avancerJour() {
+        jour++;
+    }
+
+    public int getJour() {
+        return jour;
     }
 
     public double getBanque() {
         return this.banque;
+    }
+
+    public int[] getStocks() {
+        return stocks;
+    }
+
+    public void comptabiliser(Actions action, float montant) {
+        if (action == Actions.ACHETER) {
+            montant *= -1;
+        }
+        banque += montant;
+    }
+       public void changerStocks(Actions action, Semences choixSemence, int montant) {
+        if (action == Actions.VENDRE) {
+            montant *= -1;
+        }
+        stocks[choixSemence.getId()] += montant;
     }
 
 }

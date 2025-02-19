@@ -13,56 +13,80 @@ import java.util.ArrayList;
  */
 public enum Semences {
 
-    RIZ("r", 23, 150, 10),
-    CITROUILLE("c", 50, 400, 15),
-    MAIS("m", 100, 1200, 20);
+    RIZ("r", 23, 150, 10, 0),
+    CITROUILLE("c", 50, 400, 15, 1),
+    MAIS("m", 100, 1200, 20, 2);
 
     Random rng = new Random();
-
+    
     private final int PLANCHER;
     private final int PLAFOND;
     private final int FLUCT;  // toutes les semences fluctuent de 0 à valeur. On n'a que besoin de savoir le max de la fluctuation
-
+    
+    private int id;
     private String tag;
     private int stock;
-    private double prix;
+    private float prix;
     private int augmentations;
-    private ArrayList<Double> histoPrix = new ArrayList<Double>();
+    private ArrayList<Float> histoPrix = new ArrayList<Float>();
 
-    Semences(String tag, int plancher, int plafond, int fluct) {
+    Semences(String tag, int plancher, int plafond, int fluct, int id) {
         this.tag = tag;
         PLANCHER = plancher;
         PLAFOND = plafond;
         FLUCT = fluct;
         stock = 0;
-        prix = (double) rng.nextInt(plancher, plafond) / 100;
+        prix = (float) rng.nextInt(plancher, plafond) / 100;
         augmentations = 0;
         histoPrix.add(prix);
+        this.id = id;
     }
 
-    public double prixDuJour() {
-//         call a method that checks whether or not price increases
-
-//        add or subtract amount random amout within seed attributes with a Math.min or Math.max
-        double prix;
-        
-        
-        
-        return prix;
+    public void sauverPrix(float prix) {
+        if (histoPrix.size() > 14) {
+            histoPrix.remove(0);
+            histoPrix.add(prix);
+        } else {
+            histoPrix.add(prix);
+        }
     }
 
-    
-    
-
-
-    
-    
-    public double getPrix() {
-        return this.prix;
+    public void setPrix(float prix) {
+        this.prix = prix;
     }
-    
-    public ArrayList<Double> getHistoPrix(){
-        return this.histoPrix;
+
+    public float getPlafond() {
+        return (float) PLAFOND / 100;
+    }
+
+    public float getPlancher() {
+        return (float) PLANCHER / 100;
+    }
+
+    public int getFluct() {
+        return FLUCT;
+    }
+
+    public float getPrix() {
+        return (float) prix;
+    }
+
+    public ArrayList<Float> getHistoPrix() {
+        return histoPrix;
+    }
+
+    public String getTag() {
+        return tag;
+    }
+    public int getId(){
+        return id;
+    }
+
+    public void afficherHistoPrix() {
+        for (int i = 0; i < histoPrix.size(); i++) {
+            System.out.printf("$%.2f ", histoPrix.get(i));
+        }
+        System.out.println();
     }
 
 //    public double changerPrix(){}

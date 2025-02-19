@@ -16,10 +16,14 @@ public enum Actions {
     HISTORIQUE("h"),
     QUITTER("q");
 
-    public String tag;
+    private String tag;
 
     Actions(String tag) {
         this.tag = tag;
+    }
+
+    public String getTag() {
+        return tag;
     }
 
 }
