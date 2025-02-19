@@ -13,25 +13,28 @@ import java.util.ArrayList;
  */
 public enum Semences {
 
-    RIZ("r", 23, 150, 10, 0),
-    CITROUILLE("c", 50, 400, 15, 1),
-    MAIS("m", 100, 1200, 20, 2);
+    RIZ("r","Riz", 23, 150, 10, 0),
+    CITROUILLE("c","Citrouille", 50, 400, 15, 1),
+    MAIS("m","Mais", 100, 1200, 20, 2);
 
     Random rng = new Random();
-    
+    private String tag;
+    private String name;
     private final int PLANCHER;
     private final int PLAFOND;
     private final int FLUCT;  // toutes les semences fluctuent de 0 à valeur. On n'a que besoin de savoir le max de la fluctuation
-    
     private int id;
-    private String tag;
+   
+    
     private int stock;
+    
     private float prix;
     private int augmentations;
     private ArrayList<Float> histoPrix = new ArrayList<Float>();
 
-    Semences(String tag, int plancher, int plafond, int fluct, int id) {
+    Semences(String tag, String name, int plancher, int plafond, int fluct, int id) {
         this.tag = tag;
+        this.name = name;
         PLANCHER = plancher;
         PLAFOND = plafond;
         FLUCT = fluct;
@@ -87,6 +90,9 @@ public enum Semences {
             System.out.printf("$%.2f ", histoPrix.get(i));
         }
         System.out.println();
+    }
+    public String toString(){
+        return name;
     }
 
 //    public double changerPrix(){}

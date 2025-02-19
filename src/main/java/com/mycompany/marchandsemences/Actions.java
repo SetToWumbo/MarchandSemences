@@ -10,20 +10,26 @@ package com.mycompany.marchandsemences;
  */
 public enum Actions {
     //    actions possibles par le joueur
-    ACHETER("+"),
-    VENDRE("-"),
-    ATTENDRE("t"),
-    HISTORIQUE("h"),
-    QUITTER("q");
+    ACHETER("+", "Acheter"),
+    VENDRE("-", "Vendre"),
+    ATTENDRE("t", "Attendre"),
+    HISTORIQUE("h", "Historique"),
+    QUITTER("q", "Quitter");
 
     private String tag;
+    private String name;
 
-    Actions(String tag) {
+    Actions(String tag, String name) {
         this.tag = tag;
+        this.name = name;
     }
 
     public String getTag() {
         return tag;
+    }
+    
+    public String toString(){
+        return name;
     }
 
 }

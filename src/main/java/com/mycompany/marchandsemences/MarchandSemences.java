@@ -117,7 +117,7 @@ public class MarchandSemences {
 
         int i = 0;
         for (Semences semence : Semences.values()) {
-            stats.append(semence);
+            stats.append(semence.toString());
             stats.append("=");
             stats.append(joueur.getStocks()[i]);
             stats.append("[$");
@@ -163,33 +163,19 @@ public class MarchandSemences {
      * Leur direction est indiquée par le signe
      */
     private static int changementsConsecutifs(int jourCourant, ArrayList<Float> histoPrix) {
-//        System.out.println("Debut de la methode changement");
         if (histoPrix.size() < 2) {
-//            System.out.println("Tiaille de la liste trop petite pour un changement");
             return 0;
         }
-
         int consecutif = 0;
-        float changement;
-//        tableau contenant le signe de chaque changement de prix
+        float fluctuation;
+//        tableau contenant le signe de chaque fluctuation de prix
         ArrayList<Integer> signes = new ArrayList<Integer>();
 
         for (int i = histoPrix.size() - 1; i > 0; i--) {
-            changement = (histoPrix.get(i) - histoPrix.get(i - 1));
-//            System.out.print("Changement de prix: " + changement);
-            int signe = (int) (changement / Math.abs(changement));
-//            System.out.println(" signe du changement: " + signe);
+            fluctuation = (histoPrix.get(i) - histoPrix.get(i - 1));
+            int signe = (int) (fluctuation / Math.abs(fluctuation));
             signes.add(0, signe);
         }
-//        impression du tableau des signes
-//        System.out.print("Tableau des signes: ");
-//        for (int i = 0; i < signes.size(); i++) {
-//            System.out.print(signes.get(i) + ", ");
-//        }
-//        System.out.println();
-
-//      la dernière position de la liste de signes est le changement de prix prix le plus récent
-//        int signe = signes[signes.length - 1];
         for (int i = signes.size() - 2; i > 0; i--) {
             if (signes.get(i) == signes.get(i + 1)) {
                 consecutif += signes.get(i + 1);
@@ -198,8 +184,6 @@ public class MarchandSemences {
                 return consecutif;
             }
         }
-
-//        System.out.println("Fin de la boucle des changements consecutifs");
         signes.clear();
         return consecutif;
     }
@@ -226,33 +210,27 @@ public class MarchandSemences {
     private static void prixDuJour(int jour, Semences semence) {
         Random random = new Random();
 
-        float prix = semence.getPrix(); // prix courant de la semence
+        float prix = semence.getPrix();
         float montantFluctuation = (float) random.nextInt(semence.getFluct()) / 100; // montant duquel le prix changera
-        int nbChangements = changementsConsecutifs(jour, semence.getHistoPrix()); // nb de changement s de prix consecutifs et leur direction
-        int chanceContinuer = chanceChangement(Math.abs(nbChangements)); // chance en % de continuer dans la meme direction
+        int nbConsecutifs = changementsConsecutifs(jour, semence.getHistoPrix()); // nb de changement s de prix consecutifs et leur direction
+        int chanceContinuer = chanceChangement(Math.abs(nbConsecutifs)); // chance en % de continuer dans la meme direction
         int directionChangement; // direction du changement. 1: aug, -1: dim
-        if (nbChangements != 0) {
-            directionChangement = nbChangements / Math.abs(nbChangements);
+        if (nbConsecutifs != 0) {
+            directionChangement = nbConsecutifs / Math.abs(nbConsecutifs);
         } else {
             directionChangement = 1;
         }
 
-//        System.out.print("montant de la fluctuation : " + montantFluctuation + " Nombre de changements: " + nbChangements
-//                + " Chance de continuer : " + chanceContinuer + " Direction du changement: " + directionChangement + "\n");
         if (random.nextInt(100 + 1) > chanceContinuer) {
             directionChangement *= -1;
-//            System.out.println("Nouvelle direction du changement: " + directionChangement);
         }
         montantFluctuation *= directionChangement;
-//        System.out.println("Nouveau montant de fluctuation: " + montantFluctuation);
-
         if (montantFluctuation >= 0) {
             prix = Math.min(prix += montantFluctuation, semence.getPlafond());
         } else {
             prix = Math.max(prix += montantFluctuation, semence.getPlancher());
         }
 
-//        System.out.println("Prix du jour pour " + semence.toString() + ": " + prix + "\n");
         semence.setPrix(prix);
         semence.sauverPrix(prix);
     }
@@ -265,7 +243,7 @@ public class MarchandSemences {
             menu.append(" [");
             menu.append(semence.getTag());
             menu.append("] ");
-            menu.append(semence);
+            menu.append(semence.toString());
             menu.append(" ");
         }
         menu.append(" : ");
@@ -289,7 +267,7 @@ public class MarchandSemences {
             menu.append("[");
             menu.append(action.getTag());
             menu.append("] ");
-            menu.append(action);
+            menu.append(action.toString());
             menu.append(" ");
         }
         menu.append(" : ");
