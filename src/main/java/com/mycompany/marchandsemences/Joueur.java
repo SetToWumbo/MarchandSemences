@@ -38,12 +38,24 @@ public class Joueur {
         return stocks;
     }
 
+    /**
+     * Comptabilise ou l'achat ou la vente de semences dans le compte en banque
+     * @param action achat ou vente
+     * @param montant montant à ajouter ou soustraire du compte
+     */
     public void comptabiliser(Actions action, float montant) {
         if (action == Actions.ACHETER) {
             montant *= -1;
         }
         banque += montant;
     }
+
+    /**
+     * Comptabilise l'achat ou la vente de semences dans les stocks du joueur
+     * @param action    achat ou vente
+     * @param choixSemence le stock de semence à modifier
+     * @param montant   montant à ajouter ou soustraire
+     */
        public void changerStocks(Actions action, Semences choixSemence, int montant) {
         if (action == Actions.VENDRE) {
             montant *= -1;

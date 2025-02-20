@@ -45,6 +45,10 @@ public enum Semences {
         this.id = id;
     }
 
+    /**
+     * Seuvegarde un prix dans l'historique des prix, jusqu'à 15 prix
+     * @param prix prix à sauvegarder
+     */
     public void sauverPrix(float prix) {
         if (histoPrix.size() > 14) {
             histoPrix.remove(0);
@@ -95,5 +99,4 @@ public enum Semences {
         return name;
     }
 
-//    public double changerPrix(){}
 }

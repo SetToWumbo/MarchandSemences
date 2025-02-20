@@ -23,7 +23,7 @@ public class MarchandSemences {
         Actions action = null;
         Semences choixSemence = null;
 
-        afficherStats(joueur);
+        infosDuJour(joueur);
         do {
             action = saisirChoix();
 
@@ -47,7 +47,7 @@ public class MarchandSemences {
                         choixSemence = saisirSemence();
                         confirme = acheterOuVendre(action, joueur, choixSemence);
                     } while (!confirme);
-                    afficherStats(joueur);
+                    infosDuJour(joueur);
                     break;
 
                 case VENDRE:
@@ -68,7 +68,7 @@ public class MarchandSemences {
                         choixSemence = saisirSemence();
                         confirme = acheterOuVendre(action, joueur, choixSemence);
                     } while (!confirme);
-                    afficherStats(joueur);
+                    infosDuJour(joueur);
                     break;
 
                 case ATTENDRE:
@@ -81,7 +81,7 @@ public class MarchandSemences {
                         joueur.comptabiliser(Actions.ACHETER, COUT_OPERATION);
                         joueur.avancerJour();
                     }
-                    afficherStats(joueur);
+                    infosDuJour(joueur);
                     break;
 
                 case HISTORIQUE:
@@ -89,7 +89,7 @@ public class MarchandSemences {
                     choixSemence = saisirSemence();
                     System.out.print("Prix des semences de " + choixSemence.toString() + " des 7 derniers jours (plus ancien au plus récent): ");
                     choixSemence.afficherHistoPrix();
-                    afficherStats(joueur);
+                    infosDuJour(joueur);
                     break;
 
                 case QUITTER:
@@ -105,7 +105,11 @@ public class MarchandSemences {
 
     }
 
-    private static void afficherStats(Joueur joueur) {
+    /**
+     * Affiche les informations du jour de la partie
+     * @param joueur fournis les infos du joueur à afficher
+     */
+    private static void infosDuJour(Joueur joueur) {
         StringBuilder stats = new StringBuilder();
         int[] stocks = joueur.getStocks();
 
@@ -128,6 +132,13 @@ public class MarchandSemences {
         System.out.println(stats.toString());
     }
 
+    /**
+     * Fait l'achat ou la vente des semences selon l'action en paramètre
+     * @param action achat ou vente
+     * @param joueur contient les infos du compte en banque et des stocks à modifier
+     * @param choixSemence semence à acheter ou vendre
+     * @return confirme le succès ou l'échec de l'action
+     */
     private static boolean acheterOuVendre(Actions action, Joueur joueur, Semences choixSemence) {
         int max = 0;
         switch (action) {
@@ -154,13 +165,10 @@ public class MarchandSemences {
     }
 
     /**
-     * Rends le nombre de fluctuations consécutives et leur direction a partir
-     * de l'historique des prix
-     *
+     * Compte les augmentations ou diminutions consécutives du prix d'une semence
      * @param jourCourant Jour courant de la partie
      * @param histoPrix historique des prix d'une semence
-     * @return int contenant le nombre de changements dans la même direction.
-     * Leur direction est indiquée par le signe
+     * @return int contenant le nombre de changements dans la même direction, indiquée par le signe du nombre
      */
     private static int changementsConsecutifs(int jourCourant, ArrayList<Float> histoPrix) {
         if (histoPrix.size() < 2) {
@@ -188,6 +196,11 @@ public class MarchandSemences {
         return consecutif;
     }
 
+    /**
+     * Indique le pourcentage de chance que la fluctuation de prix continue dans la même direction.
+     * @param nbChangements Nombre de changements de prix consécutifs dans la même direction
+     * @return pourcentage de chance que la direction du changement est conservée
+     */
     private static int chanceChangement(int nbChangements) {
         switch (nbChangements) {
             case 0:
@@ -207,12 +220,17 @@ public class MarchandSemences {
         }
     }
 
+    /**
+     * Calcule le prix du jour d'une semence selon ses nombres de changements consécutifs dans la même direction dans l'historique des prix
+     * @param jour jour courant de la partie
+     * @param semence pour laquelle on calcule le prix
+     */
     private static void prixDuJour(int jour, Semences semence) {
         Random random = new Random();
 
         float prix = semence.getPrix();
         float montantFluctuation = (float) random.nextInt(semence.getFluct()) / 100; // montant duquel le prix changera
-        int nbConsecutifs = changementsConsecutifs(jour, semence.getHistoPrix()); // nb de changement s de prix consecutifs et leur direction
+        int nbConsecutifs = changementsConsecutifs(jour, semence.getHistoPrix()); // nb de changements de prix consecutifs et leur direction
         int chanceContinuer = chanceChangement(Math.abs(nbConsecutifs)); // chance en % de continuer dans la meme direction
         int directionChangement; // direction du changement. 1: aug, -1: dim
         if (nbConsecutifs != 0) {
@@ -283,12 +301,12 @@ public class MarchandSemences {
         return action;
     }
 
-    private static int saisirMontant(String item, int maxItem) {
+    private static int saisirMontant(String item, int maximum) {
         StringBuilder menu = new StringBuilder();
         menu.append("Combien de ");
         menu.append(item);
         menu.append(" [1 à ");
-        menu.append(maxItem);
+        menu.append(maximum);
         menu.append("]");
         menu.append(" ? : ");
 
@@ -303,7 +321,7 @@ public class MarchandSemences {
             } catch (Exception e) {
                 montant = 0;
             }
-        } while (montant < 1 || montant > maxItem);
+        } while (montant < 1 || montant > maximum);
         return montant;
     }
 
